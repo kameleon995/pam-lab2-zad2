@@ -1,0 +1,2 @@
+zadanie 2: 
+Dodano pole stanowiska / krótkiego opisu, ponadto edycja jest możliwa dopiero po włączeniu trybu edycji odpowiednim przyciskiem. 

@@ -36,7 +36,7 @@ export default function Task2Screen() {
 			borderColor: theme.colors.borderError,
 			borderRadius: 5,
 			padding: 10,
-			marginBottom: 15,
+			marginBottom: 5,
 			color: theme.colors.text,
 		},
 		saveButton: {
@@ -82,6 +82,7 @@ export default function Task2Screen() {
 		},
 		errorText: {
 			fontSize: 14,
+			marginBottom: 10,
 			color: theme.colors.borderError,
 		},
 		editContainer: {
@@ -148,14 +149,15 @@ export default function Task2Screen() {
 	});
 
 	const [name, setName] = useState('Grzegorz Widera');
+	const [title, setTitle] = useState('Student informatyki');
 	const [city, setCity] = useState('Dąbrowa Górnicza');
 	const [bio, setBio] = useState('Passionate software developer with a love for creating innovative solutions. Experienced in various programming languages and frameworks, always eager to learn and grow in the tech industry.');
 	const [email, setEmail] = useState('grzegorz.widera@student.wsb.edu.pl');
 
 	const [editFieldsVisible, setEditFieldsVisible] = useState(false);
 
-	const [editCache, setEditCache] = useState({ name, city, bio, email });
-	const [editErrors, setEditErrors] = useState({ name: false, city: false, bio: false, email: false });
+	const [editCache, setEditCache] = useState({ name, title, city, bio, email });
+	const [editErrors, setEditErrors] = useState({ name: false, title: false, city: false, bio: false, email: false });
 
 	const maxBioLength = 255;
 
@@ -168,7 +170,13 @@ export default function Task2Screen() {
 	return (
 		<ScrollView contentInsetAdjustmentBehavior="automatic"
 			style={style.mainScreen}>
-			<Pressable onPress={() => setEditFieldsVisible(!editFieldsVisible)} style={style.buttonEdit}>
+			<Pressable onPress={() => {
+				if (editFieldsVisible) {
+					setEditCache({ name, title, city, bio, email });
+					setEditErrors({ name: false, title: false, city: false, bio: false, email: false });
+				}
+				setEditFieldsVisible(!editFieldsVisible);
+			}} style={style.buttonEdit}>
 				<MaterialIcons name="edit" size={36} color={theme.colors.text} />
 			</Pressable>
 			<View style={{ ...style.profilePictureContainer, height: imageHeight, width: imageWidth }}>
@@ -191,25 +199,32 @@ export default function Task2Screen() {
 					<Text style={style.editTitleText}>Edytuj profil</Text>
 
 					<Text style={style.infoText}>Imię i nazwisko:</Text>
-					<TextInput id="name" value={name} onChangeText={(text) => {
+					<TextInput id="name" value={editCache.name} onChangeText={(text) => {
 						setEditCache({ ...editCache, name: text });
 						setEditErrors({ ...editErrors, name: text.trim() === '' });
 					}} style={editErrors.name ? style.inputBad : style.input} />
 					{editErrors.name && <Text style={style.errorText}>Pole imię i nazwisko nie może być puste</Text>}
 
+					<Text style={style.infoText}>Stanowisko:</Text>
+					<TextInput id="title" value={editCache.title} onChangeText={(text) => {
+						setEditCache({ ...editCache, title: text });
+						setEditErrors({ ...editErrors, title: text.trim() === '' });
+					}} style={editErrors.title ? style.inputBad : style.input} />
+					{editErrors.title && <Text style={style.errorText}>Pole stanowisko nie może być puste</Text>}
+
 					<Text style={style.infoText}>Email:</Text>
-					<TextInput id="email" value={email} onChangeText={(text) => {
+					<TextInput id="email" value={editCache.email} onChangeText={(text) => {
 						setEditCache({ ...editCache, email: text });
 						setEditErrors({ ...editErrors, email: !text.includes('@') });
 					}} style={editErrors.email ? style.inputBad : style.input} />
 					{editErrors.email && <Text style={style.errorText}>Email musi zawierać znak @</Text>}
 
 					<Text style={style.infoText}>Miasto:</Text>
-					<TextInput id="city" value={city} onChangeText={(text) => setEditCache({ ...editCache, city: text })} style={editErrors.city ? style.inputBad : style.input} />
+					<TextInput id="city" value={editCache.city} onChangeText={(text) => setEditCache({ ...editCache, city: text })} style={editErrors.city ? style.inputBad : style.input} />
 					{editErrors.city && <Text style={style.errorText}>Pole miasto nie może być puste</Text>}
 
 					<Text style={style.infoText}>Bio:</Text>
-					<TextInput id="bio" value={bio} onChangeText={(text) => {
+					<TextInput id="bio" value={editCache.bio} onChangeText={(text) => {
 						setEditCache({ ...editCache, bio: text });
 						setEditErrors({ ...editErrors, bio: text.length > maxBioLength });
 					}} multiline style={editErrors.bio ? style.inputBad : style.input} />
@@ -222,6 +237,7 @@ export default function Task2Screen() {
 							return;
 						}
 						setName(editCache.name);
+						setTitle(editCache.title);
 						setCity(editCache.city);
 						setBio(editCache.bio);
 						setEmail(editCache.email);
