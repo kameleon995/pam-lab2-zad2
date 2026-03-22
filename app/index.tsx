@@ -2,6 +2,7 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { Asset } from 'expo-asset';
 import { useState } from 'react';
 import { Image, Pressable, ScrollView, StyleSheet, Text, TextInput, View, useWindowDimensions } from 'react-native';
+import SettingsRow from './resources/SettingsRow';
 import getTheme from './resources/style';
 
 export default function Task2Screen() {
@@ -96,13 +97,6 @@ export default function Task2Screen() {
 			marginBottom: 10,
 			color: theme.colors.text,
 		},
-		buttonMode: {
-			position: 'absolute',
-			top: -16,
-			left: -4,
-			zIndex: 1,
-			padding: 10,
-		},
 		buttonEdit: {
 			position: 'absolute',
 			top: -16,
@@ -127,7 +121,30 @@ export default function Task2Screen() {
 			fontSize: 14,
 			color: theme.colors.text,
 			opacity: 0.6,
-		}
+		},
+		settingsRow: {
+			marginTop: 30,
+			paddingVertical: 15,
+			paddingHorizontal: 20,
+			borderWidth: 1,
+			borderColor: theme.colors.border,
+			borderRadius: 10,
+			justifyContent: 'space-between',
+		},
+		settingsLabel: {
+			fontSize: 16,
+			color: theme.colors.text,
+		},
+		settingsValue: {
+			fontSize: 16,
+			color: theme.colors.text,
+			marginLeft: 8,
+		},
+		settingsRowContent: {
+			marginTop: 12,
+			flexDirection: 'row',
+			alignItems: 'center',
+		},
 	});
 
 	const [name, setName] = useState('Grzegorz Widera');
@@ -142,18 +159,17 @@ export default function Task2Screen() {
 
 	const maxBioLength = 255;
 
+	const [settings, setSettings] = useState({
+		notifications: true,
+		profileVisibility: false,
+		lightTheme: true,
+	});
+
 	return (
 		<ScrollView contentInsetAdjustmentBehavior="automatic"
 			style={style.mainScreen}>
 			<Pressable onPress={() => setEditFieldsVisible(!editFieldsVisible)} style={style.buttonEdit}>
 				<MaterialIcons name="edit" size={36} color={theme.colors.text} />
-			</Pressable>
-			<Pressable onPress={() => {
-				const newMode = themeMode === 'light' ? 'dark' : 'light';
-				setThemeMode(newMode);
-				setTheme(getTheme(newMode));
-			}} style={style.buttonMode}>
-				<MaterialIcons name={themeMode === 'light' ? 'dark-mode' : 'light-mode'} size={36} color={theme.colors.text} />
 			</Pressable>
 			<View style={{ ...style.profilePictureContainer, height: imageHeight, width: imageWidth }}>
 				<Image source={imageSource} resizeMode="cover" style={style.profilePicture} />
@@ -202,17 +218,29 @@ export default function Task2Screen() {
 
 					<Pressable onPress={() => {
 						if (Object.values(editErrors).some(error => error)) {
+							// TODO: show error message
 							return;
 						}
 						setName(editCache.name);
 						setCity(editCache.city);
 						setBio(editCache.bio);
 						setEmail(editCache.email);
+						// TODO: show success message
 					}} style={style.saveButton}>
 						<Text style={style.saveButtonText}>Zapisz</Text>
 					</Pressable>
 				</View>
 			)}
+
+			<SettingsRow label="Otrzymuj powiadomienia" value={settings.notifications} text={settings.notifications ? 'Włączone' : 'Wyłączone'} onSet={(value) => setSettings({ ...settings, notifications: value })} style={style} />
+			<SettingsRow label="Widoczność profilu" value={settings.profileVisibility} text={settings.profileVisibility ? 'Widoczny' : 'Prywatny'} onSet={(value) => setSettings({ ...settings, profileVisibility: value })} style={style} />
+			<SettingsRow label="Motyw" value={settings.lightTheme} text={settings.lightTheme ? 'Jasny' : 'Ciemny'} onSet={(value) => {
+				setSettings({ ...settings, lightTheme: value })
+				const newMode = value ? 'light' : 'dark';
+				setThemeMode(newMode);
+				setTheme(getTheme(newMode));
+			}} style={style} />
+			{/* TODO: about app */}
 		</ScrollView>
 	);
 }
