@@ -6,6 +6,7 @@ export function lightTheme() {
 			primary: '#007AFF',
 			border: '#C7C7CC',
 			borderError: '#FF3B30',
+			good: '#008c23',
 		},
 	};
 };
@@ -18,6 +19,7 @@ export function darkTheme() {
 			primary: '#0A84FF',
 			border: '#3A3A3C',
 			borderError: '#FF3B30',
+			good: '#34C759',
 		},
 	};
 };

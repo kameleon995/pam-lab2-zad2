@@ -146,18 +146,30 @@ export default function Task2Screen() {
 			flexDirection: 'row',
 			alignItems: 'center',
 		},
+		savingSuccess: {
+			marginTop: 10,
+			color: theme.colors.good,
+			fontSize: 16,
+		},
+		savingError: {
+			marginTop: 10,
+			color: theme.colors.borderError,
+			fontSize: 16,
+		},
 	});
 
 	const [name, setName] = useState('Grzegorz Widera');
 	const [title, setTitle] = useState('Student informatyki');
 	const [city, setCity] = useState('Dąbrowa Górnicza');
-	const [bio, setBio] = useState('Passionate software developer with a love for creating innovative solutions. Experienced in various programming languages and frameworks, always eager to learn and grow in the tech industry.');
+	const [bio, setBio] = useState('Student informatyki na WSB w Dąbrowie Górniczej. Pasjonat nowych technologii, programowania i gier komputerowych. W wolnym czasie lubi podróżować, grać na gitarze i spędzać czas z przyjaciółmi.');
 	const [email, setEmail] = useState('grzegorz.widera@student.wsb.edu.pl');
 
 	const [editFieldsVisible, setEditFieldsVisible] = useState(false);
 
 	const [editCache, setEditCache] = useState({ name, title, city, bio, email });
 	const [editErrors, setEditErrors] = useState({ name: false, title: false, city: false, bio: false, email: false });
+
+	const [profileSaveState, setProfileSaveState] = useState<'none' | 'success' | 'error'>('none');
 
 	const maxBioLength = 255;
 
@@ -175,6 +187,7 @@ export default function Task2Screen() {
 					setEditCache({ name, title, city, bio, email });
 					setEditErrors({ name: false, title: false, city: false, bio: false, email: false });
 				}
+				setProfileSaveState('none');
 				setEditFieldsVisible(!editFieldsVisible);
 			}} style={style.buttonEdit}>
 				<MaterialIcons name="edit" size={36} color={theme.colors.text} />
@@ -233,7 +246,7 @@ export default function Task2Screen() {
 
 					<Pressable onPress={() => {
 						if (Object.values(editErrors).some(error => error)) {
-							// TODO: show error message
+							setProfileSaveState('error');
 							return;
 						}
 						setName(editCache.name);
@@ -241,10 +254,12 @@ export default function Task2Screen() {
 						setCity(editCache.city);
 						setBio(editCache.bio);
 						setEmail(editCache.email);
-						// TODO: show success message
+						setProfileSaveState('success');
 					}} style={style.saveButton}>
 						<Text style={style.saveButtonText}>Zapisz</Text>
 					</Pressable>
+					{profileSaveState === 'success' && (<Text style={style.savingSuccess}>Profil został zapisany</Text>)}
+					{profileSaveState === 'error' && (<Text style={style.savingError}>Wystąpił błąd podczas zapisywania profilu</Text>)}
 				</View>
 			)}
 
